@@ -13,5 +13,5 @@ type Client struct {
 }
 
 func (c *Client) Authenticate() (err error) {
-
+	return
 }

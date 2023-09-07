@@ -37,3 +37,6 @@ bazel-*
 
 # deploy env
 hack/deploy/**/deploy.env
+
+# test
+vdt.json
