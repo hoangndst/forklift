@@ -98,7 +98,7 @@ func (r *Client) PowerOn(vmRef ref.Ref) (err error) {
 }
 
 func (r *Client) PreTransferActions(vmRef ref.Ref) (ready bool, err error) {
-	vm, err := r.getVM(vmRef)
+	_, err = r.getVM(vmRef)
 	if err != nil {
 		err = liberr.Wrap(
 			err,
