@@ -2,10 +2,10 @@ package suit
 
 import (
 	compute "cloud.google.com/go/compute/apiv1"
+	"cloud.google.com/go/compute/apiv1/computepb"
 	"context"
 	"fmt"
 	"google.golang.org/api/iterator"
-	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 	"google.golang.org/protobuf/proto"
 	"io"
 	"os"
@@ -52,7 +52,6 @@ func listAllInstances(w io.Writer, projectID string) error {
 		return fmt.Errorf("NewInstancesRESTClient: %w", err)
 	}
 	defer instancesClient.Close()
-
 	// Use the `MaxResults` parameter to limit the number of results that the API returns per response page.
 	req := &computepb.AggregatedListInstancesRequest{
 		Project:    projectID,

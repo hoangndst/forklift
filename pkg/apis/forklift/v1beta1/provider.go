@@ -42,6 +42,8 @@ const (
 	OpenStack ProviderType = "openstack"
 	// OVA
 	Ova ProviderType = "ova"
+	// GCP
+	GCP ProviderType = "gcp"
 )
 
 var ProviderTypes = []ProviderType{
@@ -50,6 +52,7 @@ var ProviderTypes = []ProviderType{
 	OVirt,
 	OpenStack,
 	Ova,
+	GCP,
 }
 
 func (t ProviderType) String() string {

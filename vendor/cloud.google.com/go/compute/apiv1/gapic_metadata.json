@@ -58,6 +58,11 @@
               "methods": [
                 "List"
               ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
+              ]
             }
           }
         }
@@ -147,6 +152,11 @@
                 "Patch"
               ]
             },
+            "SetEdgeSecurityPolicy": {
+              "methods": [
+                "SetEdgeSecurityPolicy"
+              ]
+            },
             "Update": {
               "methods": [
                 "Update"
@@ -191,6 +201,11 @@
                 "GetHealth"
               ]
             },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
             "Insert": {
               "methods": [
                 "Insert"
@@ -204,6 +219,16 @@
             "Patch": {
               "methods": [
                 "Patch"
+              ]
+            },
+            "SetEdgeSecurityPolicy": {
+              "methods": [
+                "SetEdgeSecurityPolicy"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
               ]
             },
             "SetSecurityPolicy": {
@@ -312,6 +337,11 @@
             "TestIamPermissions": {
               "methods": [
                 "TestIamPermissions"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "Update"
               ]
             }
           }
@@ -568,6 +598,11 @@
               "methods": [
                 "List"
               ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
+              ]
             }
           }
         }
@@ -791,6 +826,20 @@
             "Update": {
               "methods": [
                 "Update"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ImageFamilyViews": {
+      "clients": {
+        "rest": {
+          "libraryClient": "ImageFamilyViewsClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "Get"
               ]
             }
           }
@@ -1029,6 +1078,11 @@
         "rest": {
           "libraryClient": "InstanceTemplatesClient",
           "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
             "Delete": {
               "methods": [
                 "Delete"
@@ -1173,6 +1227,16 @@
                 "Reset"
               ]
             },
+            "Resume": {
+              "methods": [
+                "Resume"
+              ]
+            },
+            "SendDiagnosticInterrupt": {
+              "methods": [
+                "SendDiagnosticInterrupt"
+              ]
+            },
             "SetDeletionProtection": {
               "methods": [
                 "SetDeletionProtection"
@@ -1213,6 +1277,11 @@
                 "SetMinCpuPlatform"
               ]
             },
+            "SetName": {
+              "methods": [
+                "SetName"
+              ]
+            },
             "SetScheduling": {
               "methods": [
                 "SetScheduling"
@@ -1251,6 +1320,11 @@
             "Stop": {
               "methods": [
                 "Stop"
+              ]
+            },
+            "Suspend": {
+              "methods": [
+                "Suspend"
               ]
             },
             "TestIamPermissions": {
@@ -1321,6 +1395,11 @@
               "methods": [
                 "Patch"
               ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
+              ]
             }
           }
         }
@@ -1378,6 +1457,11 @@
             "Patch": {
               "methods": [
                 "Patch"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
               ]
             }
           }
@@ -1447,6 +1531,50 @@
         }
       }
     },
+    "MachineImages": {
+      "clients": {
+        "rest": {
+          "libraryClient": "MachineImagesClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "TestIamPermissions"
+              ]
+            }
+          }
+        }
+      }
+    },
     "MachineTypes": {
       "clients": {
         "rest": {
@@ -1465,6 +1593,89 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "NetworkAttachments": {
+      "clients": {
+        "rest": {
+          "libraryClient": "NetworkAttachmentsClient",
+          "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "TestIamPermissions"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "NetworkEdgeSecurityServices": {
+      "clients": {
+        "rest": {
+          "libraryClient": "NetworkEdgeSecurityServicesClient",
+          "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
               ]
             }
           }
@@ -1514,6 +1725,95 @@
             "ListNetworkEndpoints": {
               "methods": [
                 "ListNetworkEndpoints"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "TestIamPermissions"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "NetworkFirewallPolicies": {
+      "clients": {
+        "rest": {
+          "libraryClient": "NetworkFirewallPoliciesClient",
+          "rpcs": {
+            "AddAssociation": {
+              "methods": [
+                "AddAssociation"
+              ]
+            },
+            "AddRule": {
+              "methods": [
+                "AddRule"
+              ]
+            },
+            "CloneRules": {
+              "methods": [
+                "CloneRules"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "GetAssociation": {
+              "methods": [
+                "GetAssociation"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
+            "GetRule": {
+              "methods": [
+                "GetRule"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
+              ]
+            },
+            "PatchRule": {
+              "methods": [
+                "PatchRule"
+              ]
+            },
+            "RemoveAssociation": {
+              "methods": [
+                "RemoveAssociation"
+              ]
+            },
+            "RemoveRule": {
+              "methods": [
+                "RemoveRule"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
               ]
             },
             "TestIamPermissions": {
@@ -1652,6 +1952,11 @@
             "SetNodeTemplate": {
               "methods": [
                 "SetNodeTemplate"
+              ]
+            },
+            "SimulateMaintenanceEvent": {
+              "methods": [
+                "SimulateMaintenanceEvent"
               ]
             },
             "TestIamPermissions": {
@@ -1986,6 +2291,11 @@
                 "GetHealth"
               ]
             },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
             "Insert": {
               "methods": [
                 "Insert"
@@ -1999,6 +2309,11 @@
             "Patch": {
               "methods": [
                 "Patch"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
               ]
             },
             "Update": {
@@ -2033,6 +2348,11 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "Update"
               ]
             }
           }
@@ -2121,6 +2441,11 @@
             "TestIamPermissions": {
               "methods": [
                 "TestIamPermissions"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "Update"
               ]
             }
           }
@@ -2333,6 +2658,35 @@
         }
       }
     },
+    "RegionInstanceTemplates": {
+      "clients": {
+        "rest": {
+          "libraryClient": "RegionInstanceTemplatesClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            }
+          }
+        }
+      }
+    },
     "RegionInstances": {
       "clients": {
         "rest": {
@@ -2370,6 +2724,100 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "RegionNetworkFirewallPolicies": {
+      "clients": {
+        "rest": {
+          "libraryClient": "RegionNetworkFirewallPoliciesClient",
+          "rpcs": {
+            "AddAssociation": {
+              "methods": [
+                "AddAssociation"
+              ]
+            },
+            "AddRule": {
+              "methods": [
+                "AddRule"
+              ]
+            },
+            "CloneRules": {
+              "methods": [
+                "CloneRules"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "GetAssociation": {
+              "methods": [
+                "GetAssociation"
+              ]
+            },
+            "GetEffectiveFirewalls": {
+              "methods": [
+                "GetEffectiveFirewalls"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
+            "GetRule": {
+              "methods": [
+                "GetRule"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
+              ]
+            },
+            "PatchRule": {
+              "methods": [
+                "PatchRule"
+              ]
+            },
+            "RemoveAssociation": {
+              "methods": [
+                "RemoveAssociation"
+              ]
+            },
+            "RemoveRule": {
+              "methods": [
+                "RemoveRule"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "TestIamPermissions"
               ]
             }
           }
@@ -2434,6 +2882,40 @@
         }
       }
     },
+    "RegionSecurityPolicies": {
+      "clients": {
+        "rest": {
+          "libraryClient": "RegionSecurityPoliciesClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
+              ]
+            }
+          }
+        }
+      }
+    },
     "RegionSslCertificates": {
       "clients": {
         "rest": {
@@ -2457,6 +2939,45 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "RegionSslPolicies": {
+      "clients": {
+        "rest": {
+          "libraryClient": "RegionSslPoliciesClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "ListAvailableFeatures": {
+              "methods": [
+                "ListAvailableFeatures"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
               ]
             }
           }
@@ -2522,6 +3043,11 @@
                 "List"
               ]
             },
+            "Patch": {
+              "methods": [
+                "Patch"
+              ]
+            },
             "SetSslCertificates": {
               "methods": [
                 "SetSslCertificates"
@@ -2530,6 +3056,35 @@
             "SetUrlMap": {
               "methods": [
                 "SetUrlMap"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "RegionTargetTcpProxies": {
+      "clients": {
+        "rest": {
+          "libraryClient": "RegionTargetTcpProxiesClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
               ]
             }
           }
@@ -2647,6 +3202,11 @@
             "TestIamPermissions": {
               "methods": [
                 "TestIamPermissions"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "Update"
               ]
             }
           }
@@ -2800,6 +3360,11 @@
                 "AddRule"
               ]
             },
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
             "Delete": {
               "methods": [
                 "Delete"
@@ -2844,6 +3409,65 @@
               "methods": [
                 "RemoveRule"
               ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ServiceAttachments": {
+      "clients": {
+        "rest": {
+          "libraryClient": "ServiceAttachmentsClient",
+          "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "Delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "Get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "GetIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "List"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "Patch"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "SetIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "TestIamPermissions"
+              ]
             }
           }
         }
@@ -2867,6 +3491,11 @@
             "GetIamPolicy": {
               "methods": [
                 "GetIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "Insert"
               ]
             },
             "List": {
@@ -2932,6 +3561,11 @@
         "rest": {
           "libraryClient": "SslPoliciesClient",
           "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
             "Delete": {
               "methods": [
                 "Delete"
@@ -3148,6 +3782,11 @@
                 "Patch"
               ]
             },
+            "SetCertificateMap": {
+              "methods": [
+                "SetCertificateMap"
+              ]
+            },
             "SetQuicOverride": {
               "methods": [
                 "SetQuicOverride"
@@ -3300,6 +3939,11 @@
                 "SetBackendService"
               ]
             },
+            "SetCertificateMap": {
+              "methods": [
+                "SetCertificateMap"
+              ]
+            },
             "SetProxyHeader": {
               "methods": [
                 "SetProxyHeader"
@@ -3324,6 +3968,11 @@
         "rest": {
           "libraryClient": "TargetTcpProxiesClient",
           "rpcs": {
+            "AggregatedList": {
+              "methods": [
+                "AggregatedList"
+              ]
+            },
             "Delete": {
               "methods": [
                 "Delete"
@@ -3386,6 +4035,11 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
               ]
             }
           }
@@ -3523,6 +4177,11 @@
             "List": {
               "methods": [
                 "List"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "SetLabels"
               ]
             }
           }

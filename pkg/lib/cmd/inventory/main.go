@@ -4,6 +4,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	api "github.com/konveyor/forklift-controller/pkg/apis/forklift/v1beta1"
 	"net/http"
 	"os"
 	"runtime"
@@ -83,6 +84,7 @@ func (h *EventHandler) Created(e web.Event) {
 		h.created = append(h.created, object.ID)
 	}
 
+	Migration * api.Migration
 	fmt.Printf("[%d] Event (created): %v\n", h.wid, e)
 }
 
