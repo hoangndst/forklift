@@ -120,13 +120,13 @@ func (r *Client) getVM(vmRef ref.Ref) (vm *computepb.Instance, err error) {
 	return
 }
 
-func (r *Client) createImage(vmRef ref.Ref) (imageID string, err error) {
+func (r *Client) createImage(vmRef ref.Ref) (imageName string, err error) {
 	if vmRef.Name == "" && vmRef.ID == "" {
 		err = NameOrIDRequiredError
 		return
 	}
 	// create image from boot disk when instance is stopped
-	err = r.Client.VMCreateImageFromDisk(vmRef.Name, vmRef.Name, false)
+	imageName, err = r.Client.VMCreateImageFromDisk(vmRef.Name, false)
 	if err != nil {
 		err = liberr.Wrap(err)
 		return
@@ -160,7 +160,21 @@ func (r *Client) PreTransferActions(vmRef ref.Ref) (ready bool, err error) {
 	}
 
 	// Create Image from VM's boot disk. (make sure image is ready)
-
+	imageName, err := r.createImage(vmRef)
+	if err != nil {
+		err = liberr.Wrap(err)
+		return
+	}
+	image := &computepb.Image{}
+	err = r.Client.Get(image, imageName)
+	if err != nil {
+		err = liberr.Wrap(err)
+		return
+	}
+	if *image.Status != ImageStatusReady {
+		err = liberr.Wrap(ResourceNotFoundError)
+		return
+	}
 	// Export Image to bucket (make sure image in bucket is ready)
 
 	return true, nil

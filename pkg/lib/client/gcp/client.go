@@ -450,7 +450,7 @@ func (c *Client) getInstanceBootDisk(instanceName string) (disk *computepb.Attac
 	return
 }
 
-func (c *Client) VMCreateImageFromDisk(instanceName string, imageName string, forceCreate bool) (err error) {
+func (c *Client) VMCreateImageFromDisk(instanceName string, forceCreate bool) (imageName string, err error) {
 	err = c.connectComputeServiceAPI()
 	if err != nil {
 		return
@@ -473,9 +473,10 @@ func (c *Client) VMCreateImageFromDisk(instanceName string, imageName string, fo
 		Disk:    disk.GetDeviceName(),
 		Zone:    c.Zone,
 	}
+	imageName = fmt.Sprintf("%s-%s", instanceName, time.Now().Format("20060102150405"))
 	sourceDisk, err := c.diskService.Get(c.ctx, sourceReq)
 	if err != nil {
-		return err
+		return
 	}
 	req := &computepb.InsertImageRequest{
 		Project: c.ProjectID,
@@ -489,7 +490,7 @@ func (c *Client) VMCreateImageFromDisk(instanceName string, imageName string, fo
 	op, err := c.imageService.Insert(c.ctx, req)
 
 	if err = op.Wait(c.ctx); err != nil {
-		return fmt.Errorf("unable to wait for the operation: %w", err)
+		return imageName, fmt.Errorf("unable to wait for the operation: %w", err)
 	}
 	return
 }
