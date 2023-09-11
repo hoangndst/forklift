@@ -37,5 +37,11 @@ type ImageListOpts struct {
 type ImageCreateOpts struct {
 }
 
+type NetworkListOpts struct {
+}
+
+type NetworkCreateOpts struct {
+}
+
 type DeleteOpts struct {
 }

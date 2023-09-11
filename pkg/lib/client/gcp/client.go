@@ -6,32 +6,42 @@ import (
 	"context"
 	"fmt"
 	liberr "github.com/konveyor/forklift-controller/pkg/lib/error"
+	"github.com/konveyor/forklift-controller/pkg/lib/logging"
 	"google.golang.org/api/iterator"
 	"google.golang.org/protobuf/proto"
 	"io"
+	core "k8s.io/api/core/v1"
 	"log"
 	"os"
 	"time"
 
 	compute "cloud.google.com/go/compute/apiv1"
 	"cloud.google.com/go/compute/apiv1/computepb"
-	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/storage"
 )
 
 type Client struct {
+	URL               string
+	Options           map[string]string
 	GoogleAuthPath    string
 	ProjectID         string
 	Zone              string
-	bucketName        string
+	BucketName        string
+	Log               logging.LevelLogger
 	ctx               context.Context
-	computeMetadata   *metadata.Client
 	computeService    *compute.InstancesClient
 	imageService      *compute.ImagesClient
 	networkService    *compute.NetworksClient
 	diskService       *compute.DisksClient
 	storageService    *storage.Client
 	cloudBuildService *cloudbuild.Client
+}
+
+func (c *Client) LoadOptionsFromSecret(secret *core.Secret) {
+	c.Options = make(map[string]string)
+	for key, value := range secret.Data {
+		c.Options[key] = string(value)
+	}
 }
 
 func (c *Client) Authenticate() (err error) {
@@ -50,16 +60,6 @@ func (c *Client) Connect() (err error) {
 	}
 	//userProjects := &[]Project{}
 	//err = c.GetUserProjects(userProjects)
-	return
-}
-
-func (c *Client) connectComputeMetadataAPI() (err error) {
-	if c.computeMetadata == nil {
-
-		if err != nil {
-			return
-		}
-	}
 	return
 }
 
@@ -154,6 +154,8 @@ func (c *Client) List(object interface{}, opts interface{}) (err error) {
 		err = c.computeServiceAPI(object, opts)
 	case *[]computepb.Image:
 		err = c.imageServiceAPI(object, opts)
+	case *[]computepb.Network:
+		err = c.networkServiceAPI(object, opts)
 	default:
 		err = c.unsupportedTypeError(object)
 	}
@@ -168,6 +170,10 @@ func (c *Client) Get(object interface{}, ID string) (err error) {
 	switch object.(type) {
 	case *computepb.Instance:
 		err = c.computeServiceAPI(object, &GetOpts{ID: ID})
+	case *computepb.Image:
+		err = c.imageServiceAPI(object, &GetOpts{ID: ID})
+	case *computepb.Network:
+		err = c.networkServiceAPI(object, &GetOpts{ID: ID})
 	default:
 		err = c.unsupportedTypeError(object)
 	}
@@ -343,6 +349,103 @@ func (c *Client) imageList(object *[]computepb.Image) (err error) {
 	return
 }
 
+func (c *Client) networkServiceAPI(object interface{}, opts interface{}) (err error) {
+	err = c.connectNetworkServiceAPI()
+	if err != nil {
+		return
+	}
+	switch object.(type) {
+	case *computepb.Network, *[]computepb.Network:
+		err = c.networkAPI(object, opts)
+	default:
+		err = c.unsupportedTypeError(object)
+	}
+	if err != nil {
+		err = liberr.Wrap(err)
+	}
+	return
+}
+
+func (c *Client) networkAPI(object interface{}, opts interface{}) (err error) {
+	switch object.(type) {
+	case *[]computepb.Network:
+		object := object.(*[]computepb.Network)
+		switch opts.(type) {
+		case *NetworkListOpts:
+			err = c.networkList(object)
+		default:
+			err = c.unsupportedTypeError(opts)
+		}
+	case *computepb.Network:
+		object := object.(*computepb.Network)
+		switch opts.(type) {
+		case *GetOpts:
+			opts := opts.(*GetOpts)
+			req := &computepb.GetNetworkRequest{
+				Project: c.ProjectID,
+				Network: opts.ID,
+			}
+			network, err := c.networkService.Get(c.ctx, req)
+			if err != nil {
+				return
+			}
+			*object = *network
+		default:
+			err = c.unsupportedTypeError(opts)
+		}
+	default:
+		err = c.unsupportedTypeError(object)
+	}
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (c *Client) networkList(object *[]computepb.Network) (err error) {
+	err = c.connectNetworkServiceAPI()
+	if err != nil {
+		return
+	}
+	req := &computepb.ListNetworksRequest{
+		Project: c.ProjectID,
+	}
+	it := c.networkService.List(c.ctx, req)
+	for {
+		network, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		*object = append(*object, *network)
+	}
+	return
+}
+
+//func (c *Client) subnetList(object *[]computepb.Subnetwork) (err error) {
+//	err = c.connectNetworkServiceAPI()
+//	if err != nil {
+//		return
+//	}
+//	req := &computepb.ListSubnetworksRequest{
+//		Project: c.ProjectID,
+//	}
+//	it := c.networkService.List(c.ctx, req)
+//	for {
+//		subnetwork, err := it.Next()
+//		if err == iterator.Done {
+//			break
+//		}
+//		if err != nil {
+//			return err
+//		}
+//		*object = append(*object, *subnetwork)
+//	}
+//	return
+//}
+
 func (c *Client) createBucket(bucketName string) error {
 	// projectID := "my-project-id"
 	// bucketName := "bucket-name"
@@ -354,7 +457,22 @@ func (c *Client) createBucket(bucketName string) error {
 	if err := bucket.Create(c.ctx, c.ProjectID, nil); err != nil {
 		return fmt.Errorf("Bucket(%q).Create: %w", bucketName, err)
 	}
+	c.BucketName = bucketName
 	return nil
+}
+
+func (c *Client) checkObjectExists(bucketName string, objectName string) (bool, error) {
+	err := c.connectStorageServiceAPI()
+	if err != nil {
+		return false, err
+	}
+	bucket := c.storageService.Bucket(bucketName)
+	object := bucket.Object(objectName)
+	_, err = object.Attrs(c.ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (c *Client) VMExportImageToBucket(imageName, imageType, objectName string) error {
@@ -362,16 +480,24 @@ func (c *Client) VMExportImageToBucket(imageName, imageType, objectName string) 
 	if err != nil {
 		return err
 	}
-	if c.bucketName == "" {
-		c.bucketName = fmt.Sprintf("forklift-%s", time.Now().Format("20060102150405"))
-		err = c.createBucket(c.bucketName)
+	if c.BucketName == "" {
+		c.BucketName = fmt.Sprintf("forklift-%s", time.Now().Format("20060102150405"))
+		err = c.createBucket(c.BucketName)
 		if err != nil {
 			return err
 		}
+	} else {
+		exists, err := c.checkObjectExists(c.BucketName, objectName)
+		if err != nil {
+			return err
+		}
+		if exists {
+			return nil
+		}
 	}
 
-	// Create a Cloud Build build object.
-	destinationURI := fmt.Sprintf("gs://%s/%s.%s", c.bucketName, objectName, imageType)
+	// Create a CloudBuild build object.
+	destinationURI := fmt.Sprintf("gs://%s/%s.%s", c.BucketName, objectName, imageType)
 	build := &cloudbuildpb.Build{
 		Steps: []*cloudbuildpb.BuildStep{
 			{
@@ -473,7 +599,7 @@ func (c *Client) VMCreateImageFromDisk(instanceName string, forceCreate bool) (i
 		Disk:    disk.GetDeviceName(),
 		Zone:    c.Zone,
 	}
-	imageName = fmt.Sprintf("%s-%s", instanceName, time.Now().Format("20060102150405"))
+	imageName = fmt.Sprintf("%s-%s", instanceName, "forklift")
 	sourceDisk, err := c.diskService.Get(c.ctx, sourceReq)
 	if err != nil {
 		return
@@ -571,3 +697,5 @@ func (c *Client) unsupportedTypeError(object interface{}) (err error) {
 	err = liberr.New(fmt.Sprintf("unsupported type %T", object))
 	return
 }
+
+// buon qua di

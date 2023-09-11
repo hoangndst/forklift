@@ -135,6 +135,7 @@ func (r *Client) createImage(vmRef ref.Ref) (imageName string, err error) {
 }
 
 func (r *Client) PreTransferActions(vmRef ref.Ref) (ready bool, err error) {
+	ready = false
 	_, err = r.getVM(vmRef)
 	if err != nil {
 		err = liberr.Wrap(
@@ -176,6 +177,11 @@ func (r *Client) PreTransferActions(vmRef ref.Ref) (ready bool, err error) {
 		return
 	}
 	// Export Image to bucket (make sure image in bucket is ready)
-
-	return true, nil
+	err = r.VMExportImageToBucket(imageName, gcpclient.QCOW2, r.BucketName)
+	if err != nil {
+		err = liberr.Wrap(err)
+		return
+	}
+	ready = true
+	return
 }

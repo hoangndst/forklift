@@ -201,23 +201,23 @@ func listImagesFromBucket(w io.Writer, projectID, bucketName string) error {
 	return nil
 }
 
-func checkObjectIsReady(bucketName, objectName string) error {
+func checkObjectIsReady(bucketName, objectName string) (exists bool, err error) {
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		return fmt.Errorf("storage.NewClient: %w", err)
+		return false, fmt.Errorf("storage.NewClient: %w", err)
 	}
 	defer client.Close()
 
 	ctx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
-
-	// Check if the object exists.
-	_, err = client.Bucket(bucketName).Object(objectName).Attrs(ctx)
+	// check object is ready
+	bucket := client.Bucket(bucketName)
+	attrs, err := bucket.Object(objectName).Attrs(ctx)
 	if err != nil {
-		return fmt.Errorf("Object(%q).Attrs: %w", objectName, err)
+		return false, fmt.Errorf("Object(%q).Attrs: %w", objectName, err)
 	}
-	return nil
+	return attrs != nil, nil
 }
 
 func getImageFromBucket(w io.Writer, projectID, bucketName, objectName string) error {
@@ -483,6 +483,87 @@ func getImageByName(projectID, imageName string) error {
 	return nil
 }
 
+func listNetworks(w io.Writer, projectID string) error {
+	// projectID := "your_project_id"
+	ctx := context.Background()
+	client, err := compute.NewNetworksRESTClient(ctx)
+	if err != nil {
+		return fmt.Errorf("NewNetworksRESTClient: %w", err)
+	}
+	defer client.Close()
+
+	req := &computepb.ListNetworksRequest{
+		Project: projectID,
+	}
+
+	it := client.List(ctx, req)
+	fmt.Fprintf(w, "Networks found:\n")
+	for {
+		network, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("unable to list networks: %w", err)
+		}
+		fmt.Fprintf(w, "- %s\n", network.GetName())
+	}
+	return nil
+}
+
+func listSubnetworks(w io.Writer, projectID string) error {
+	// projectID := "your_project_id"
+	ctx := context.Background()
+	client, err := compute.NewSubnetworksRESTClient(ctx)
+	if err != nil {
+		return fmt.Errorf("NewSubnetworksRESTClient: %w", err)
+	}
+	defer client.Close()
+
+	req := &computepb.ListSubnetworksRequest{
+		Project: projectID,
+		Region:  "us-central1",
+	}
+
+	it := client.List(ctx, req)
+	fmt.Fprintf(w, "Subnetworks found:\n")
+	for {
+		subnetwork, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("unable to list subnetworks: %w", err)
+		}
+		fmt.Fprintf(w, "- %s\n", subnetwork.GetName())
+	}
+	return nil
+}
+
+func TestListSubnetworks(t *testing.T) {
+	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/home/hoangndst/Desktop/kubevirt/forklift/tests/suit/vdt.json")
+	if err != nil {
+		return
+	}
+	w := io.Writer(os.Stdout)
+	err = listSubnetworks(w, "confident-sweep-395418")
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestListNetworks(t *testing.T) {
+	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/home/hoangndst/Desktop/kubevirt/forklift/tests/suit/vdt.json")
+	if err != nil {
+		return
+	}
+	w := io.Writer(os.Stdout)
+	err = listNetworks(w, "confident-sweep-395418")
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestListBuckets(t *testing.T) {
 	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/home/hoangndst/Desktop/kubevirt/forklift/tests/suit/vdt.json")
 	if err != nil {
@@ -638,4 +719,24 @@ func TestCreateBucket(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestCheckObjectIsReady(t *testing.T) {
+	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/home/hoangndst/Desktop/kubevirt/forklift/tests/suit/vdt.json")
+	exists, err := checkObjectIsReady("example-image-1", "image-go-1.qcow2")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(exists)
+}
+
+func TestStuff(t *testing.T) {
+	ctx := context.Background()
+	// set context value
+	ctx = context.WithValue(ctx, "bucketName", "example-image-1")
+	ctx = context.WithValue(ctx, "objectName", "image-go-1.qcow2")
+	bucketName := ctx.Value("bucketName")
+	fmt.Println(bucketName.(string))
+	objectName := ctx.Value("objectName")
+	fmt.Println(objectName)
 }
