@@ -26,8 +26,7 @@ import (
 
 	api "github.com/konveyor/forklift-controller/pkg/apis/forklift/v1beta1"
 	refapi "github.com/konveyor/forklift-controller/pkg/apis/forklift/v1beta1/ref"
-	model "github.com/konveyor/forklift-controller/pkg/controller/provider/model/openstack"
-	web "github.com/konveyor/forklift-controller/pkg/controller/provider/web/openstack"
+	model "github.com/konveyor/forklift-controller/pkg/controller/provider/model/gcp"
 	"github.com/konveyor/forklift-controller/pkg/controller/validation/policy"
 	liberr "github.com/konveyor/forklift-controller/pkg/lib/error"
 	libmodel "github.com/konveyor/forklift-controller/pkg/lib/inventory/model"
@@ -267,7 +266,7 @@ func (r *VMEventHandler) validate(VM *model.VM) (err error) {
 		Ref: refapi.Ref{
 			ID: VM.ID,
 		},
-		Workload: r.workload,
+		//Workload: r.workload,
 	}
 	r.log.V(4).Info(
 		"Validate VM.",
@@ -342,23 +341,23 @@ func (r *VMEventHandler) validated(batch []*policy.Task) {
 }
 
 // Build the workload.
-func (r *VMEventHandler) workload(vmID string) (object interface{}, err error) {
-	vm := &model.VM{
-		Base: model.Base{ID: vmID},
-	}
-	err = r.DB.Get(vm)
-	if err != nil {
-		return
-	}
-	workload := web.Workload{}
-	workload.With(vm)
-	err = workload.Expand(r.DB)
-	if err != nil {
-		return
-	}
-
-	workload.Link(r.Provider)
-	object = workload
-
-	return
-}
+//func (r *VMEventHandler) workload(vmID string) (object interface{}, err error) {
+//	vm := &model.VM{
+//		Base: model.Base{ID: vmID},
+//	}
+//	err = r.DB.Get(vm)
+//	if err != nil {
+//		return
+//	}
+//	workload := web.Workload{}
+//	workload.With(vm)
+//	err = workload.Expand(r.DB)
+//	if err != nil {
+//		return
+//	}
+//
+//	workload.Link(r.Provider)
+//	object = workload
+//
+//	return
+//}

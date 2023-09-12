@@ -70,9 +70,49 @@ type Image struct {
 	StorageLocations  []string          `sql:""`
 }
 
+type AttachedDisk struct {
+	ID string `sql:"d0,fk(volume)"`
+}
+
 type VM struct {
 	Base
-	RevisionValidated int64 `sql:"d0,index(revisionValidated)"`
+	RevisionValidated int64               `sql:"d0,index(revisionValidated)"`
+	PolicyVersion     int                 `sql:"d0,index(policyVersion)" eq:"-"`
+	Concerns          []Concern           `sql:"" eq:"-"`
+	CpuPlatform       *string             `sql:""`
+	CreationTimestamp *string             `sql:""`
+	Description       *string             `sql:""`
+	Disks             []*AttachedDisk     `sql:""`
+	Fingerprint       *string             `sql:""`
+	Hostname          *string             `sql:""`
+	NetworkInterfaces []*NetworkInterface `sql:""`
+	SelfLink          *string             `sql:""`
+	Status            *string             `sql:""`
+	Zone              *string             `sql:""`
+}
+
+type NetworkInterface struct {
+	Ipv6AccessType *string `sql:""`
+	Ipv6Address    *string `sql:""`
+	Name           *string `sql:""`
+	Network        *string `sql:""`
+	NetworkIP      *string `sql:""`
+}
+
+type Network struct {
+	Base
+	IPv4Range                             *string  `sql:""`
+	CreationTimestamp                     *string  `sql:""`
+	Description                           *string  `sql:""`
+	EnableUlaInternalIpv6                 *bool    `sql:""`
+	FirewallPolicy                        *string  `sql:""`
+	GatewayIPv4                           *string  `sql:""`
+	Id                                    *uint64  `sql:""`
+	InternalIpv6Range                     *string  `sql:""`
+	NetworkFirewallPolicyEnforcementOrder *string  `sql:""`
+	SelfLink                              *string  `sql:""`
+	SelfLinkWithId                        *string  `sql:""`
+	Subnetworks                           []string `sql:""`
 }
 
 // Determine if current revision has been validated.

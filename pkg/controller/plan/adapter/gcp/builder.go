@@ -27,7 +27,7 @@ func (b Builder) ConfigMap(vmRef ref.Ref, secret *core.Secret, object *core.Conf
 
 // Create the destination Kubevirt VM.
 func (b Builder) VirtualMachine(vmRef ref.Ref, object *cnv.VirtualMachineSpec, persistentVolumeClaims []core.PersistentVolumeClaim) error {
-
+	vm := &model.Workload{}
 }
 
 func (b Builder) DataVolumes(vmRef ref.Ref, secret *core.Secret, configMap *core.ConfigMap, dvTemplate *cdi.DataVolume) (dvs []cdi.DataVolume, err error) {
