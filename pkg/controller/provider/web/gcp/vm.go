@@ -9,7 +9,6 @@ import (
 	libmodel "github.com/konveyor/forklift-controller/pkg/lib/inventory/model"
 	"net/http"
 	"strings"
-	"time"
 )
 
 // Routes.
@@ -182,26 +181,20 @@ type VM0 = Resource
 // VM detail=1
 type VM1 struct {
 	VM0
-	Status            string                 `json:"status"`
-	HostID            string                 `json:"hostID,omitempty"`
-	RevisionValidated int64                  `json:"revisionValidated"`
-	ImageID           string                 `json:"imageID,omitempty"`
-	Addresses         map[string]interface{} `json:"addresses"`
-	AttachedVolumes   []AttachedVolume       `json:"attachedVolumes,omitempty"`
-	Concerns          []Concern              `json:"concerns"`
+	Status            string          `json:"status"`
+	HostID            string          `json:"hostID,omitempty"`
+	RevisionValidated int64           `json:"revisionValidated"`
+	AttachedDisk      []*AttachedDisk `json:"attachedVolumes,omitempty"`
+	Concerns          []Concern       `json:"concerns"`
 }
 
 // Build the resource using the model.
 func (r *VM1) With(m *model.VM) {
 	r.VM0.With(&m.Base)
-	r.TenantID = m.TenantID
 	r.Status = *m.Status
-	r.HostID = m.HostID
+	r.HostID = *m.Hostname
 	r.RevisionValidated = m.RevisionValidated
-	r.ImageID = m.ImageID
-	r.FlavorID = m.FlavorID
-	r.Addresses = m.Addresses
-	r.AttachedVolumes = m.AttachedVolumes
+	r.AttachedDisk = m.Disks
 	r.Concerns = m.Concerns
 }
 
@@ -217,8 +210,6 @@ func (r *VM1) Content(detail int) interface{} {
 // VM resource.
 type VM struct {
 	VM1
-	Updated        time.Time                `json:"updated"`
-	Created        time.Time                `json:"created"`
 	Progress       int                      `json:"progress"`
 	AccessIPv4     string                   `json:"accessIPv4,omitempty"`
 	AccessIPv6     string                   `json:"accessIPv6,omitempty"`
@@ -226,31 +217,28 @@ type VM struct {
 	KeyName        string                   `json:"keyName,omitempty"`
 	AdminPass      string                   `json:"adminPass,omitempty"`
 	SecurityGroups []map[string]interface{} `json:"securityGroups,omitempty"`
-	Fault          Fault                    `json:"fault"`
 	Tags           *[]string                `json:"tags,omitempty"`
 	ServerGroups   *[]string                `json:"serverGroups,omitempty"`
 }
 
 type AttachedDisk = model.AttachedDisk
 type Concern = model.Concern
-type Fault = model.Fault
+
+//type Fault = model.Fault
 
 // Build the resource using the model.
 func (r *VM) With(m *model.VM) {
 	r.VM1.With(m)
-	r.UserID = m.UserID
-	r.Updated = m.Updated
-	r.Created = m.CreationTimestamp
-	r.Progress = m.Progress
-	r.AccessIPv4 = m.AccessIPv4
-	r.AccessIPv6 = m.AccessIPv6
-	r.Metadata = m.Metadata
-	r.KeyName = m.KeyName
-	r.AdminPass = m.AdminPass
-	r.SecurityGroups = m.SecurityGroups
-	r.Fault = m.Fault
-	r.Tags = m.Tags
-	r.ServerGroups = m.ServerGroups
+	//r.Progress = m.Progress
+	//r.AccessIPv4 = m.AccessIPv4
+	//r.AccessIPv6 = m.AccessIPv6
+	//r.Metadata = m.Metadata
+	//r.KeyName = m.KeyName
+	//r.AdminPass = m.AdminPass
+	//r.SecurityGroups = m.SecurityGroups
+	//r.Fault = m.Fault
+	//r.Tags = m.Tags
+	//r.ServerGroups = m.ServerGroups
 }
 
 // Build self link (URI).

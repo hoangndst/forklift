@@ -6,6 +6,7 @@ import (
 	api "github.com/konveyor/forklift-controller/pkg/apis/forklift/v1beta1"
 	model "github.com/konveyor/forklift-controller/pkg/controller/provider/model/gcp"
 	"github.com/konveyor/forklift-controller/pkg/controller/provider/web/base"
+	libmodel "github.com/konveyor/forklift-controller/pkg/lib/inventory/model"
 	"net/http"
 )
 
@@ -88,4 +89,50 @@ func (r *Workload) Link(p *api.Provider) {
 			VMParam:            r.ID,
 		})
 	r.XVM.Link(p)
+}
+
+// Expanded: VM.
+type XVM struct {
+	VM
+	Image    Image     `json:"image"`
+	Networks []Network `json:"networks"`
+}
+
+// Expand references.
+func (r *XVM) Expand(db libmodel.DB) (err error) {
+	var imageID string
+	var networks []Network
+	for name := range r.Networks {
+		networkList := []model.Network{}
+		err = db.List(&networkList, model.ListOptions{
+			Predicate: libmodel.Eq("Name", name),
+			Detail:    model.MaxDetail,
+		})
+		if err != nil {
+			return
+		}
+		for _, networkModel := range networkList {
+			network := &Network{}
+			network.With(&networkModel)
+			networks = append(networks, *network)
+		}
+	}
+	r.Networks = networks
+	if imageID != "" {
+		image := model.Image{Base: model.Base{
+			ID: imageID,
+		}}
+
+		err = db.Get(&image)
+		if err != nil {
+			// The image the VM has been based on could have been removed
+			if errors.Is(err, model.NotFound) {
+				err = nil
+				return
+			}
+			return
+		}
+		r.Image.With(&image)
+	}
+	return
 }
