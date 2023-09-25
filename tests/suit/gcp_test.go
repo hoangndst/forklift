@@ -83,7 +83,7 @@ func listAllInstances(w io.Writer, projectID string) error {
 					return err
 				}
 				fmt.Println(instance.GetId() == id)
-				fmt.Fprintf(w, "- %s %d\n", instance.GetName(), instance.GetId())
+				fmt.Fprintf(w, "- %s %s\n", instance.GetName(), instance.GetNetworkInterfaces())
 			}
 		}
 	}
@@ -112,7 +112,7 @@ func getInstances(projectID, instanceName string) error {
 		return fmt.Errorf("unable to get instance: %w", err)
 	}
 
-	fmt.Printf("Instance: %+v\n", instance.GetMetadata())
+	fmt.Printf("Instance: %+v\n", instance.GetNetworkInterfaces())
 
 	return nil
 }
@@ -432,10 +432,10 @@ func exportImageToBucket(projectID, imageName, imageType, bucketName, objectName
 				Name: "gcr.io/compute-image-tools/gce_vm_image_export:release",
 				Args: []string{
 					"--timeout=7000s",
-					"--source_image=image-go-test",
+					"--source_image=image-1",
 					"--client_id=api",
 					"--format=qcow2",
-					"--destination_uri=gs://example-image-1/image-go-test.qcow2",
+					"--destination_uri=gs://forklift-1694331580/image-1.qcow2",
 				},
 			},
 		},
@@ -506,7 +506,7 @@ func listNetworks(w io.Writer, projectID string) error {
 		if err != nil {
 			return fmt.Errorf("unable to list networks: %w", err)
 		}
-		fmt.Fprintf(w, "- %s\n", network.GetName())
+		fmt.Fprintf(w, "- %s\n", network.GetIPv4Range())
 	}
 	return nil
 }

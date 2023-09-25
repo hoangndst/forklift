@@ -82,9 +82,9 @@ func (r Builder) ConfigMap(vmRef ref.Ref, secret *core.Secret, object *core.Conf
 }
 
 // Create the destination Kubevirt VM.
-func (r Builder) VirtualMachine(vmRef ref.Ref, object *cnv.VirtualMachineSpec, persistentVolumeClaims []core.PersistentVolumeClaim) (err error) {
+func (r Builder) VirtualMachine(vmRef ref.Ref, vmSpec *cnv.VirtualMachineSpec, persistentVolumeClaims []core.PersistentVolumeClaim) (err error) {
 	vm := &model.Workload{}
-	err = b.Source.Inventory.Find(vm, vmRef)
+	err = r.Source.Inventory.Find(vm, vmRef)
 	if err != nil {
 		err = liberr.Wrap(
 			err,
@@ -93,12 +93,17 @@ func (r Builder) VirtualMachine(vmRef ref.Ref, object *cnv.VirtualMachineSpec, p
 			vmRef.String())
 		return
 	}
-	r.mapFirmware(vm, vmSpec)
-	r.mapResources(vm, vmSpec)
-	r.mapHardwareRng(vm, vmSpec)
-	r.mapInput(vm, vmSpec)
-	r.mapVideo(vm, vmSpec)
-	r.mapDisks(vm, persistentVolumeClaims, vmSpec)
+
+	if vmSpec.Template == nil {
+		vmSpec.Template = &cnv.VirtualMachineInstanceTemplateSpec{}
+	}
+
+	//r.mapFirmware(vm, vmSpec)
+	//r.mapResources(vm, vmSpec)
+	//r.mapHardwareRng(vm, vmSpec)
+	//r.mapInput(vm, vmSpec)
+	//r.mapVideo(vm, vmSpec)
+	//r.mapDisks(vm, persistentVolumeClaims, vmSpec)
 	err = r.mapNetworks(vm, vmSpec)
 	if err != nil {
 		err = liberr.Wrap(
@@ -112,9 +117,8 @@ func (r Builder) VirtualMachine(vmRef ref.Ref, object *cnv.VirtualMachineSpec, p
 }
 
 func (r *Builder) mapNetworks(vm *model.Workload, object *cnv.VirtualMachineSpec) (err error) {
-	var kNetworks []cnv.Network
-	var kInterfaces []cnv.Interface
-
+	//TODO implement me
+	panic("implement me")
 }
 
 func (r Builder) DataVolumes(vmRef ref.Ref, secret *core.Secret, configMap *core.ConfigMap, dvTemplate *cdi.DataVolume) (dvs []cdi.DataVolume, err error) {
